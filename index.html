@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tap Rush</title>
+<title>Tap Rush Battle</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <style>
 body {
@@ -15,13 +17,19 @@ body {
 }
 
 h1 {
-  margin-top: 40px;
-  font-size: 32px;
+  margin-top: 30px;
+  font-size: 30px;
 }
 
 .score {
-  font-size: 28px;
-  margin: 20px;
+  font-size: 26px;
+  margin: 10px;
+}
+
+.timer {
+  font-size: 22px;
+  margin: 10px;
+  color: #fbbf24;
 }
 
 button {
@@ -35,15 +43,22 @@ button {
   color: white;
   box-shadow: 0 10px 25px rgba(0,0,0,0.4);
   cursor: pointer;
+  margin-top: 20px;
 }
 
 button:active {
-  transform: scale(0.95);
+  transform: scale(0.9);
+}
+
+#result {
+  margin-top: 20px;
+  font-size: 22px;
+  color: #60a5fa;
 }
 
 .small {
-  margin-top: 20px;
   opacity: 0.7;
+  margin-top: 10px;
 }
 </style>
 
@@ -51,19 +66,80 @@ button:active {
 
 <body>
 
-<h1>⚡ Tap Rush</h1>
+<h1>⚡ Tap Rush Battle</h1>
+
+<div class="timer">Time: <span id="time">30</span>s</div>
 <div class="score">Score: <span id="score">0</span></div>
 
-<button onclick="tap()">TAP</button>
+<button onclick="tap()" id="tapBtn">START</button>
 
-<div class="small">Keep tapping to increase your score!</div>
+<div id="result"></div>
+<div class="small">Tap fast. Build combos. Survive 30 seconds.</div>
 
 <script>
+let tg = window.Telegram.WebApp;
+tg.expand();
+
 let score = 0;
+let time = 30;
+let gameStarted = false;
+let combo = 0;
+let timer;
+
+function startGame() {
+  score = 0;
+  time = 30;
+  combo = 0;
+  gameStarted = true;
+
+  document.getElementById("score").innerText = score;
+  document.getElementById("time").innerText = time;
+  document.getElementById("result").innerText = "";
+  document.getElementById("tapBtn").innerText = "TAP!";
+
+  timer = setInterval(() => {
+    time--;
+    document.getElementById("time").innerText = time;
+
+    if (time <= 0) {
+      endGame();
+    }
+  }, 1000);
+}
 
 function tap() {
-  score++;
+  if (!gameStarted) {
+    startGame();
+    return;
+  }
+
+  combo++;
+
+  // combo multiplier system
+  let add = 1;
+  if (combo > 10) add = 3;
+  else if (combo > 5) add = 2;
+
+  score += add;
+
   document.getElementById("score").innerText = score;
+}
+
+function endGame() {
+  clearInterval(timer);
+  gameStarted = false;
+
+  let rank = "";
+
+  if (score < 30) rank = "💀 Noob";
+  else if (score < 60) rank = "🟡 Average";
+  else if (score < 100) rank = "🔥 Pro";
+  else rank = "🏆 Legend";
+
+  document.getElementById("result").innerText =
+    "Game Over! Rank: " + rank;
+
+  document.getElementById("tapBtn").innerText = "RESTART";
 }
 </script>
 
