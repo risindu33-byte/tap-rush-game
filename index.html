@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tap Rush</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: white;
+  text-align: center;
+}
+
+h1 {
+  margin-top: 40px;
+  font-size: 32px;
+}
+
+.score {
+  font-size: 28px;
+  margin: 20px;
+}
+
+button {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  border: none;
+  font-size: 22px;
+  font-weight: bold;
+  background: #22c55e;
+  color: white;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+  cursor: pointer;
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+.small {
+  margin-top: 20px;
+  opacity: 0.7;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>⚡ Tap Rush</h1>
+<div class="score">Score: <span id="score">0</span></div>
+
+<button onclick="tap()">TAP</button>
+
+<div class="small">Keep tapping to increase your score!</div>
+
+<script>
+let score = 0;
+
+function tap() {
+  score++;
+  document.getElementById("score").innerText = score;
+}
+</script>
+
+</body>
+</html>
