@@ -1,147 +1,190 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script src='//libtl.com/sdk.js' data-zone='10883658' data-sdk='show_10883658'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tap Rush Battle</title>
+<title>Tap Rush Target Hunt</title>
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial;
-  background: linear-gradient(135deg, #0f172a, #1e293b);
-  color: white;
-  text-align: center;
+body{
+margin:0;
+font-family:Arial;
+background:linear-gradient(135deg,#0f172a,#1e293b);
+color:white;
+text-align:center;
+overflow:hidden;
 }
 
-h1 {
-  margin-top: 30px;
-  font-size: 30px;
+h1{margin-top:20px;}
+
+#gameArea{
+position:relative;
+width:100%;
+height:60vh;
+border:2px solid rgba(255,255,255,0.2);
+margin-top:20px;
 }
 
-.score {
-  font-size: 26px;
-  margin: 10px;
+.target{
+position:absolute;
+width:70px;
+height:70px;
+border-radius:50%;
+background:#22c55e;
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
 }
 
-.timer {
-  font-size: 22px;
-  margin: 10px;
-  color: #fbbf24;
+.score{font-size:24px;margin-top:10px;}
+.timer{font-size:20px;color:#fbbf24;}
+
+button{
+margin:10px;
+padding:12px 25px;
+font-size:18px;
+border:none;
+border-radius:10px;
+background:#3b82f6;
+color:white;
+cursor:pointer;
 }
 
-button {
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  border: none;
-  font-size: 22px;
-  font-weight: bold;
-  background: #22c55e;
-  color: white;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-  cursor: pointer;
-  margin-top: 20px;
+#result{
+margin-top:15px;
+font-size:22px;
 }
 
-button:active {
-  transform: scale(0.9);
-}
-
-#result {
-  margin-top: 20px;
-  font-size: 22px;
-  color: #60a5fa;
-}
-
-.small {
-  opacity: 0.7;
-  margin-top: 10px;
+#menu{
+display:none;
+margin-top:15px;
 }
 </style>
-
 </head>
 
 <body>
 
-<h1>⚡ Tap Rush Battle</h1>
+<h1>🎯 Tap Rush: Target Hunt</h1>
 
-<div class="timer">Time: <span id="time">30</span>s</div>
+<div class="timer">Time: <span id="time">30</span></div>
 <div class="score">Score: <span id="score">0</span></div>
 
-<button onclick="tap()" id="tapBtn">START</button>
+<div id="gameArea"></div>
+
+<button onclick="startGame()">Start Game</button>
 
 <div id="result"></div>
-<div class="small">Tap fast. Build combos. Survive 30 seconds.</div>
+
+<div id="menu">
+<button onclick="startGame()">🔁 Play Again</button>
+<button onclick="stopGame()">❌ Stop</button>
+</div>
 
 <script>
+
 let tg = window.Telegram.WebApp;
 tg.expand();
 
-let score = 0;
-let time = 30;
-let gameStarted = false;
-let combo = 0;
-let timer;
+let score = 0
+let time = 30
+let gameRunning = false
+let spawnSpeed = 1200
+let timer
 
-function startGame() {
-  score = 0;
-  time = 30;
-  combo = 0;
-  gameStarted = true;
+const area = document.getElementById("gameArea")
 
-  document.getElementById("score").innerText = score;
-  document.getElementById("time").innerText = time;
-  document.getElementById("result").innerText = "";
-  document.getElementById("tapBtn").innerText = "TAP!";
+function startGame(){
 
-  timer = setInterval(() => {
-    time--;
-    document.getElementById("time").innerText = time;
+score = 0
+time = 30
+spawnSpeed = 1200
+gameRunning = true
 
-    if (time <= 0) {
-      endGame();
-    }
-  }, 1000);
+document.getElementById("menu").style.display="none"
+document.getElementById("result").innerText=""
+document.getElementById("score").innerText=score
+document.getElementById("time").innerText=time
+
+spawnTarget()
+
+timer = setInterval(()=>{
+time--
+document.getElementById("time").innerText=time
+
+if(time<=0){
+clearInterval(timer)
+gameRunning=false
+area.innerHTML=""
+endGame()
 }
 
-function tap() {
-  if (!gameStarted) {
-    startGame();
-    return;
-  }
-
-  combo++;
-
-  // combo multiplier system
-  let add = 1;
-  if (combo > 10) add = 3;
-  else if (combo > 5) add = 2;
-
-  score += add;
-
-  document.getElementById("score").innerText = score;
+if(spawnSpeed>400){
+spawnSpeed -= 50
 }
 
-function endGame() {
-  clearInterval(timer);
-  gameStarted = false;
+},1000)
 
-  let rank = "";
-
-  if (score < 30) rank = "💀 Noob";
-  else if (score < 60) rank = "🟡 Average";
-  else if (score < 100) rank = "🔥 Pro";
-  else rank = "🏆 Legend";
-
-  document.getElementById("result").innerText =
-    "Game Over! Rank: " + rank;
-
-  document.getElementById("tapBtn").innerText = "RESTART";
 }
+
+function spawnTarget(){
+
+if(!gameRunning) return
+
+area.innerHTML=""
+
+let target=document.createElement("div")
+target.className="target"
+target.innerText="HIT"
+
+let x=Math.random()*(area.clientWidth-70)
+let y=Math.random()*(area.clientHeight-70)
+
+target.style.left=x+"px"
+target.style.top=y+"px"
+
+target.onclick=()=>{
+score+=5
+document.getElementById("score").innerText=score
+spawnTarget()
+}
+
+area.appendChild(target)
+
+setTimeout(()=>{
+if(gameRunning){
+score-=2
+document.getElementById("score").innerText=score
+spawnTarget()
+}
+},spawnSpeed)
+
+}
+
+function endGame(){
+
+let rank=""
+
+if(score<40) rank="💀 Beginner"
+else if(score<80) rank="🟡 Skilled"
+else if(score<120) rank="🔥 Pro"
+else rank="🏆 Legend"
+
+document.getElementById("result").innerText =
+"⏱ Time Up!\nScore: "+score+"\nRank: "+rank
+
+document.getElementById("menu").style.display="block"
+
+}
+
+function stopGame(){
+document.getElementById("result").innerText="Game Ended"
+document.getElementById("menu").style.display="none"
+}
+
 </script>
 
 </body>
