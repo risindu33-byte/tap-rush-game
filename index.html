@@ -8,6 +8,44 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <style>
+.target{
+position:absolute;
+width:70px;
+height:70px;
+border-radius:50%;
+background:#22c55e;
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+animation:pop 0.25s ease;
+transition:transform 0.15s;
+}
+
+.target:active{
+transform:scale(0.8);
+}
+
+@keyframes pop{
+0%{transform:scale(0);}
+80%{transform:scale(1.2);}
+100%{transform:scale(1);}
+}
+
+.hitEffect{
+position:absolute;
+font-size:20px;
+color:#22c55e;
+font-weight:bold;
+animation:floatUp 0.7s forwards;
+pointer-events:none;
+}
+
+@keyframes floatUp{
+0%{opacity:1; transform:translateY(0);}
+100%{opacity:0; transform:translateY(-40px);}
+}
 body{
 margin:0;
 font-family:Arial;
