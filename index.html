@@ -1,4 +1,4 @@
-```html
+```risindugames
 <!DOCTYPE html>
 <html>
 <head>
@@ -54,20 +54,6 @@ transform:scale(0.8);
 100%{transform:scale(1);}
 }
 
-.hitEffect{
-position:absolute;
-font-size:20px;
-color:#22c55e;
-font-weight:bold;
-animation:floatUp 0.7s forwards;
-pointer-events:none;
-}
-
-@keyframes floatUp{
-0%{opacity:1; transform:translateY(0);}
-100%{opacity:0; transform:translateY(-40px);}
-}
-
 .score{font-size:24px;margin-top:10px;}
 .timer{font-size:20px;color:#fbbf24;}
 
@@ -109,8 +95,8 @@ margin-top:15px;
 
 <div id="menu">
 <button onclick="startGame()">🔁 Play Again</button>
+<button onclick="watchAd()">🎁 Watch Ad</button>
 <button onclick="stopGame()">❌ Stop</button>
-<div id="adBox" style="margin-top:15px;"></div>
 </div>
 
 <script>
@@ -184,10 +170,8 @@ spawnTarget()
 area.appendChild(target)
 
 setTimeout(()=>{
-
 if(!gameRunning) return
 spawnTarget()
-
 }, spawnSpeed)
 
 }
@@ -206,6 +190,16 @@ document.getElementById("result").innerText =
 
 document.getElementById("menu").style.display="block"
 
+show_10883658();   // Monetag ad shows when game ends
+
+}
+
+function watchAd(){
+show_10883658().then(()=>{
+alert("Thanks for watching the ad!");
+}).catch(()=>{
+alert("Ad skipped");
+});
 }
 
 function stopGame(){
@@ -221,4 +215,3 @@ document.getElementById("menu").style.display="none"
 </body>
 </html>
 ```
-
