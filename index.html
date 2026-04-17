@@ -195,15 +195,13 @@ spawnTarget()
 area.appendChild(target)
 
 setTimeout(()=>{
-if(gameRunning){
-score-=2
-document.getElementById("score").innerText=score
+
+if(!gameRunning) return
+
+// no penalty for missing
 spawnTarget()
-}
-},spawnSpeed)
 
-}
-
+}, spawnSpeed)
 function endGame()
 
 }
